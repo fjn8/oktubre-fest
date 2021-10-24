@@ -1,0 +1,53 @@
+import Marcas.*
+import Personas.*
+
+describe "tests marcas y jarras" {
+	const corona = new CervezaRubia(cantidadDeLupulo = 5, graduacion = 8, paisDeFabricacion = "Mexico")
+	const guiness = new CervezaNegra(cantidadDeLupulo = 7, paisDeFabricacion = "Irlanda")
+	const hofbrau = new CervezaRoja(cantidadDeLupulo = 12, paisDeFabricacion = "Alemania")
+	
+	test "contenido de alcohol de una jarra" {
+		const jarra1 = new Jarra(capacidad = 1, marca = hofbrau)
+		
+		assert.equals(jarra1.contenidoDeAlcohol(), 0.05)
+	}
+	
+	test "total de alcohol ingerido en una persona" {
+		const persona = new Belga(escuchaMusicaTradicional = true, nivelDeAguante = 5, peso = 80)
+		persona.agregarJarra(new Jarra(capacidad = 1, marca = corona))
+		persona.agregarJarra(new Jarra(capacidad = 2, marca = guiness))
+		
+		assert.equals(persona.alcoholIngerido(), 0.16)
+	}
+	
+	test "esta ebria" {
+		const persona = new Aleman(escuchaMusicaTradicional = true, nivelDeAguante = 10, peso = 100)
+		persona.agregarJarra(new Jarra(capacidad = 2, marca = corona))
+		persona.agregarJarra(new Jarra(capacidad = 2, marca = hofbrau))
+		
+		assert.that(persona.estaEbria())
+		
+		const persona2 = new Checo(escuchaMusicaTradicional = true, nivelDeAguante = 12, peso = 90)
+		persona2.agregarJarra(new Jarra(capacidad = 1, marca = corona))
+		
+		assert.notThat(persona2.estaEbria())
+	}
+	
+	test "le gusta x marca" {
+		const persona = new Aleman(escuchaMusicaTradicional = true, nivelDeAguante = 10, peso = 100)
+		const persona2 = new Checo(escuchaMusicaTradicional = true, nivelDeAguante = 12, peso = 90)
+		const persona3 = new Belga(escuchaMusicaTradicional = true, nivelDeAguante = 5, peso = 80)
+		
+		assert.that(persona.leGusta(corona))
+		assert.that(persona.leGusta(guiness))
+		assert.that(persona.leGusta(hofbrau))
+		
+		assert.notThat(persona2.leGusta(corona))
+		assert.notThat(persona2.leGusta(guiness))
+		assert.notThat(persona2.leGusta(hofbrau))
+		
+		assert.that(persona3.leGusta(corona))
+		assert.that(persona3.leGusta(guiness))
+		assert.that(persona3.leGusta(hofbrau))
+	}
+}
