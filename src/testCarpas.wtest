@@ -1,0 +1,111 @@
+import Marcas.*
+import Carpas.*
+import Personas.*
+
+describe "tests segunda parte"{
+	const corona = new CervezaRubia(cantidadDeLupulo = 5, graduacion = 8, paisDeFabricacion = "Mexico")
+	const guiness = new CervezaNegra(cantidadDeLupulo = 7, paisDeFabricacion = "Irlanda")
+	const hofbrau = new CervezaRoja(cantidadDeLupulo = 12, paisDeFabricacion = "Alemania")
+	
+	const carpa1 = new Carpa(limiteDeGente=5, marcaDeCerveza=guiness, tieneBanda = true)
+	const carpa2 = new Carpa(limiteDeGente=5, marcaDeCerveza=guiness, tieneBanda = false)
+	
+	const p1 = new Aleman(escuchaMusicaTradicional = true, nivelDeAguante = 10, peso = 100)
+	const p2 = new Belga(escuchaMusicaTradicional = true, nivelDeAguante = 10, peso = 100)
+	
+		
+	test "caso 5 - Aleman quiere entrar a carpa1 vacia"{
+		assert.that(p1.quiereEntrar(carpa1))
+	}
+	
+	test "caso 5 - Aleman NO quiere entrar a carpa1 con 1 persona"{
+		carpa1.agregarPersona(p2)
+		assert.notThat(p1.quiereEntrar(carpa1))
+	}
+	
+	test "caso 5 - Belga quiere entra a carpa1"{
+		assert.that(p1.quiereEntrar(carpa1))
+	}
+	test "caso 5 - Belga NO quiere entrar a carpa2"{
+		assert.notThat(p1.quiereEntrar(carpa2))
+	}
+	
+	test "caso 6 - Carpa1 deja entrar a una persona no ebria"{
+		carpa1.agregarPersona(p2)
+		assert.that(carpa1.puedeIngresar(new Belga(escuchaMusicaTradicional = true, nivelDeAguante = 10, peso = 100)))
+	}
+	
+	test "caso 6 - Carpa1 llena no deja entrar a una persona no ebria"{
+		const carpa = new Carpa(limiteDeGente = 1, marcaDeCerveza=guiness, tieneBanda = true)
+		const per1 = new Aleman(escuchaMusicaTradicional = true, nivelDeAguante = 9, peso = 80)
+		const per2 = new Aleman(escuchaMusicaTradicional = true, nivelDeAguante = 8, peso = 90)
+		carpa.agregarPersona(per1)
+		assert.notThat(carpa.puedeIngresar(per2))
+	}
+	
+	test "caso 6 - Carpa1 no deja entrar a una persona ebria"{
+		p1.agregarJarra(new Jarra(capacidad = 5, marca = hofbrau))
+		assert.notThat(carpa1.puedeIngresar(p1))
+	}
+	
+	test "caso 7 - persona puede entrar a una carpa"{
+		assert.that(p1.puedeEntrar(carpa1))
+	}
+	
+	test "caso 7 - persona NO puede entrar a una carpa"{
+		assert.notThat(p2.puedeEntrar(carpa2))
+	}
+
+	test "caso 8 - una persona entra a una carpa, otra quiere entrar pero está ebria"{
+		const carpa3 = new Carpa(limiteDeGente=10, marcaDeCerveza=hofbrau,tieneBanda=true)
+		const jarraHolbrau = new Jarra(capacidad = 4, marca = hofbrau)
+		const personaCheco = new Checo(escuchaMusicaTradicional=true, nivelDeAguante=3, peso=90, jarrasCompradas = [jarraHolbrau])
+		
+		carpa3.agregarPersona(p1)
+		assert.equals(1, carpa3.personas().size())
+		assert.throwsException({carpa3.agregarPersona(personaCheco)})
+		
+	}
+	
+	test "caso 9 - carpa servir jarra a persona existente o no"{
+		carpa1.agregarPersona(p1)
+		carpa1.servirJarra(p1,4)
+		assert.equals(1, carpa1.cantidadEbriosEmpedernidos())
+		assert.throwsException({carpa1.servirJarra(p2,1)})
+		
+	}
+	test "caso 10 - saber cuantos ebrios empedernidos hay en la carpa"{
+		const per6 = new Belga(escuchaMusicaTradicional = false, nivelDeAguante = 4, peso = 90)
+		const per7 = new Belga(escuchaMusicaTradicional = false, nivelDeAguante = 3, peso = 85)
+		const per8 = new Belga(escuchaMusicaTradicional = false, nivelDeAguante = 3, peso = 75)
+		const per9 = new Belga(escuchaMusicaTradicional = false, nivelDeAguante = 4, peso = 95)
+		
+		carpa2.agregarPersona(per6)
+		carpa2.agregarPersona(per7)
+		carpa2.agregarPersona(per8)
+		carpa2.agregarPersona(per9)
+		
+		carpa2.servirJarra(per6,2)
+		carpa2.servirJarra(per7,3)
+		carpa2.servirJarra(per8,1)
+		carpa2.servirJarra(per9,3)
+		
+		assert.equals(3,carpa2.cantidadEbriosEmpedernidos())
+	}
+	
+	test "caso 11 - persona patriota" {
+		const carpa4 = new Carpa(limiteDeGente=10, marcaDeCerveza=hofbrau,tieneBanda=true)
+		const personaAleman = new Aleman(escuchaMusicaTradicional = true, nivelDeAguante = 5, peso = 100)
+		const personaBelga = new Belga(escuchaMusicaTradicional = true, nivelDeAguante = 4, peso = 95)
+		
+		carpa4.agregarPersona(personaAleman)
+		carpa4.agregarPersona(personaBelga)
+		carpa4.servirJarra(personaAleman, 1)
+		carpa4.servirJarra(personaAleman, 2)
+		carpa4.servirJarra(personaAleman, 3)
+		carpa4.servirJarra(personaBelga, 3)
+		
+		assert.that(personaAleman.esPatriota())
+		assert.notThat(personaBelga.esPatriota())
+	}
+}

@@ -1,7 +1,7 @@
 import Marcas.*
 import Personas.*
 
-describe "tests marcas y jarras" {
+describe "tests primera parte" {
 	const corona = new CervezaRubia(cantidadDeLupulo = 5, graduacion = 8, paisDeFabricacion = "Mexico")
 	const guiness = new CervezaNegra(cantidadDeLupulo = 7, paisDeFabricacion = "Irlanda")
 	const hofbrau = new CervezaRoja(cantidadDeLupulo = 12, paisDeFabricacion = "Alemania")

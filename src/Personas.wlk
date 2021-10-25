@@ -27,6 +27,6 @@ class Belga inherits Persona {
 
 class Aleman inherits Persona {
 	override method leGusta(marca) = true
-	override method quiereEntrar(carpa) = super(carpa) and carpa.cantidadPersonas() % 2 == 0
+	override method quiereEntrar(carpa) = super(carpa) and carpa.personas().size() % 2 == 0
 	override method pais() = "Alemania"
 }
